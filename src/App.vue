@@ -12,7 +12,7 @@ import GlobalHeader,{IUser} from './components/GlobalHeader.vue'
 
 // 传给首页header的数据
 const userData:IUser = {
-  isLogin:false,
+  isLogin:true,
   name:'jack',
   id:101
 } 

@@ -7,21 +7,13 @@
                 <el-button type="info">注册</el-button>
             </div>
             <div v-else>
-                <el-dropdown split-button type="primary">
-                    欢迎你 {{ user.name }}
-                    <template #dropdown>
-                        <el-dropdown-menu>
-                            <el-dropdown-item>新建文章</el-dropdown-item>
-                            <el-dropdown-item>管理账户</el-dropdown-item>
-                            <el-dropdown-item>退出登录</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                </el-dropdown>
+                <DropDown :name="user.name" />
             </div>
         </aside>
     </header>
 </template>
 <script lang="ts" setup>
+import DropDown from './DropDown.vue';
 import { PropType } from 'vue';
 interface IUser {
     isLogin: boolean;
