@@ -1,15 +1,21 @@
 <template>
     <div class="form-input">
         <slot></slot>
-        <el-input 
+        <input 
+        v-bind="$attrs"
         @blur="validateEmail"
         @input="updateVal"
-        v-model="inputRef.val" autosize type="textarea" placeholder="Please input" />
+        v-model="inputRef.val" autosize placeholder="Please input" />
         <p v-if="inputRef.error" v-text="inputRef.message"></p>
     </div>
 </template>
 <script setup lang="ts">
-import { PropType, reactive} from 'vue';
+import { PropType, reactive,defineOptions,defineEmits,defineProps} from 'vue';
+
+// 设置根组件不继承属性
+defineOptions({
+    inheritAttrs:false,
+})
 
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -18,8 +24,7 @@ interface IRuleProp{
     type:'required' | 'email';
     message:string;
 }
-// 接受父组件传来的值，包括验证规则
-// eslint-disable-next-line no-undef
+// 接受父组件传来的值，包括验证规则、双向绑定的数据modelValue
 const props = defineProps({
     rules:Array as PropType<IRuleProp[]>,
     modelVal:String,
@@ -54,10 +59,9 @@ const validateEmail = () => {
     }
 }
 
-// eslint-disable-next-line no-undef
-const emit = defineEmits(['updateVal'])
+const emit = defineEmits(['update:modelValue']);
 // 监听输入框的数据更新
 const updateVal = () => {
-    emit('updateVal',inputRef.val);
+    emit('update:modelValue',inputRef.val);
 }
 </script>

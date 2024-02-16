@@ -3,10 +3,13 @@
     <GlobalHeader :user="userData" />
     <!-- <ColumnList :list="testData"/> -->
     <ValidateForm>
-      <ValidateInput :rules="emailRules" @updateVal="handleUpdateVal">{{ modelVal }}
+      <ValidateInput
+        type="text"
+        v-model:modelValue="modelVal"
+       :rules="emailRules">
         <div>邮箱：</div>
       </ValidateInput>
-      <ValidateInput>
+      <ValidateInput type="password">
         <div>密码：</div>
       </ValidateInput>
     </ValidateForm>
@@ -27,9 +30,6 @@ const emailRules: IRuleProp[] = [
 ]
 // 表单数据之邮箱数据的响应式
 const modelVal = ref('init email');
-const handleUpdateVal = (newVal:string) => {
-  modelVal.value = newVal;
-}
 
 // 传给首页header的数据
 const userData: IUser = {
