@@ -1,13 +1,21 @@
 <template>
-  
   <div id="app">
+    <GlobalHeader :user="userData"/>
+
     <ColumnList :list="testData"/>
-    <div></div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import ColumnList, { ColumnProps } from './components/ColumnList.vue'
+import GlobalHeader,{IUser} from './components/GlobalHeader.vue'
+
+// 传给首页header的数据
+const userData:IUser = {
+  isLogin:false,
+  name:'jack',
+  id:101
+} 
 
 const testData: ColumnProps[] = [
   {
