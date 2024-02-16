@@ -3,6 +3,7 @@
         <slot></slot>
         <el-input 
         @blur="validateEmail"
+        @input="updateVal"
         v-model="inputRef.val" autosize type="textarea" placeholder="Please input" />
         <p v-if="inputRef.error" v-text="inputRef.message"></p>
     </div>
@@ -21,11 +22,12 @@ interface IRuleProp{
 // eslint-disable-next-line no-undef
 const props = defineProps({
     rules:Array as PropType<IRuleProp[]>,
+    modelVal:String,
 });
 
 // 响应式的信息，
 const inputRef = reactive({
-    val:"",//输入框绑定的值
+    val: "",//输入框绑定的值
     message:'',//绑定的错误提示信息
     error:false,//输入信息是佛正确
 });
@@ -51,13 +53,11 @@ const validateEmail = () => {
         inputRef.error = !allPassed;
     }
 }
-// const validateEmail = () => {
-//     if(emialRef.val.trim() === ''){
-//         emialRef.error = true;
-//         emialRef.message = 'Can not be empty!!!';
-//     }else if(!emailReg.test(emialRef.val)){
-//         emialRef.error = true;
-//         emialRef.message = 'Should be valid email!!!';
-//     }
-// }
+
+// eslint-disable-next-line no-undef
+const emit = defineEmits(['updateVal'])
+// 监听输入框的数据更新
+const updateVal = () => {
+    emit('updateVal',inputRef.val);
+}
 </script>

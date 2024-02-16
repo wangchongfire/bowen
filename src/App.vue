@@ -3,7 +3,7 @@
     <GlobalHeader :user="userData" />
     <!-- <ColumnList :list="testData"/> -->
     <ValidateForm>
-      <ValidateInput :rules="emailRules">
+      <ValidateInput :rules="emailRules" @updateVal="handleUpdateVal">{{ modelVal }}
         <div>邮箱：</div>
       </ValidateInput>
       <ValidateInput>
@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import ColumnList, { ColumnProps } from './components/ColumnList.vue'
 import GlobalHeader, { IUser } from './components/GlobalHeader.vue'
 import ValidateForm from './components/ValidateForm.vue'
@@ -24,6 +25,11 @@ const emailRules: IRuleProp[] = [
   { type: 'required', message: '电子邮箱地址不能为空' },
   { type: 'email', message: '请输入正确的电子邮箱格式' }
 ]
+// 表单数据之邮箱数据的响应式
+const modelVal = ref('init email');
+const handleUpdateVal = (newVal:string) => {
+  modelVal.value = newVal;
+}
 
 // 传给首页header的数据
 const userData: IUser = {
