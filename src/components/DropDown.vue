@@ -3,9 +3,7 @@
     欢迎你 {{ name }}
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>新建文章</el-dropdown-item>
-        <el-dropdown-item>管理账户</el-dropdown-item>
-        <el-dropdown-item>退出登录</el-dropdown-item>
+        <slot></slot>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

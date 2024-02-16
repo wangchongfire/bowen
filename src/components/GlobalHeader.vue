@@ -7,14 +7,25 @@
                 <el-button type="info">注册</el-button>
             </div>
             <div v-else>
-                <DropDown :name="user.name" />
+                <DropDown :name="user.name">
+                    <DropdownItem>
+                        <a>新建文章</a>
+                    </DropdownItem>
+                    <DropdownItem :disabled="isDisabled">
+                        <a>管理账户</a>
+                    </DropdownItem>
+                    <DropdownItem>
+                        <a>退出登录</a>
+                    </DropdownItem>
+                </DropDown>
             </div>
         </aside>
     </header>
 </template>
 <script lang="ts" setup>
 import DropDown from './DropDown.vue';
-import { PropType } from 'vue';
+import DropdownItem from './DropdownItem.vue';
+import { PropType ,ref} from 'vue';
 interface IUser {
     isLogin: boolean;
     name?: string;
@@ -28,6 +39,9 @@ const props = defineProps({
         requerid: true
     }
 });
+
+// 传给DropdownItem的值
+const isDisabled = ref(true);
 </script>
 <style lang="scss" scoped>
 header {
