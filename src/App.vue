@@ -1,21 +1,36 @@
 <template>
   <div id="app">
-    <GlobalHeader :user="userData"/>
-
-    <ColumnList :list="testData"/>
+    <GlobalHeader :user="userData" />
+    <!-- <ColumnList :list="testData"/> -->
+    <ValidateForm>
+      <ValidateInput :rules="emailRules">
+        <div>邮箱：</div>
+      </ValidateInput>
+      <ValidateInput>
+        <div>密码：</div>
+      </ValidateInput>
+    </ValidateForm>
   </div>
 </template>
 
 <script lang="ts" setup>
 import ColumnList, { ColumnProps } from './components/ColumnList.vue'
-import GlobalHeader,{IUser} from './components/GlobalHeader.vue'
+import GlobalHeader, { IUser } from './components/GlobalHeader.vue'
+import ValidateForm from './components/ValidateForm.vue'
+import ValidateInput, { IRuleProp } from './components/ValidateInput.vue';
+
+// 传给表单输入框验证的 校验规则
+const emailRules: IRuleProp[] = [
+  { type: 'required', message: '电子邮箱地址不能为空' },
+  { type: 'email', message: '请输入正确的电子邮箱格式' }
+]
 
 // 传给首页header的数据
-const userData:IUser = {
-  isLogin:true,
-  name:'jack',
-  id:101
-} 
+const userData: IUser = {
+  isLogin: true,
+  name: 'jack',
+  id: 101
+}
 
 const testData: ColumnProps[] = [
   {
@@ -44,4 +59,8 @@ const testData: ColumnProps[] = [
 ]
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+#app {
+  position: relative;
+}
+</style>
