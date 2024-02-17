@@ -1,9 +1,13 @@
 <template>
     <header>
-        <aside>博文专栏</aside>
+        <aside>
+            <router-link to="/">博文专栏</router-link>
+        </aside>
         <aside>
             <div v-if="!user?.isLogin">
-                <el-button type="primary">登录</el-button>
+                <el-button type="primary">
+                    <router-link to="/login">登录</router-link>
+                </el-button>
                 <el-button type="info">注册</el-button>
             </div>
             <div v-else>
