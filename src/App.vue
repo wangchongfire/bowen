@@ -6,7 +6,7 @@
       <ValidateInput
         ref="inputRef"
         type="text"
-        v-model:modelValue="modelVal"
+        v-model:modelValue="emailVal"
        :rules="emailRules">
         <div>邮箱：</div>
       </ValidateInput>
@@ -27,13 +27,14 @@ import GlobalHeader, { IUser } from './components/GlobalHeader.vue'
 import ValidateForm from './components/ValidateForm.vue'
 import ValidateInput, { IRuleProp } from './components/ValidateInput.vue';
 
+// 表单数据之邮箱数据的响应式
+const emailVal = ref('init email');
 // 传给表单输入框验证的 校验规则
 const emailRules: IRuleProp[] = [
   { type: 'required', message: '电子邮箱地址不能为空' },
   { type: 'email', message: '请输入正确的电子邮箱格式' }
 ]
-// 表单数据之邮箱数据的响应式
-const modelVal = ref('init email');
+
 // 获取ValidateInput组件的实例
 const inputRef = ref<any>();
 // 处理表单组件注册的事件

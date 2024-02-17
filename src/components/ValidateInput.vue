@@ -10,7 +10,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import { PropType,defineExpose, reactive,defineOptions,defineEmits,defineProps} from 'vue';
+import { PropType,defineExpose, reactive,defineOptions,defineEmits,defineProps, onMounted} from 'vue';
+import {emitter} from '../../src/hooks/UseMitt';
 
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -27,11 +28,11 @@ defineOptions({
 // 接受父组件传来的值，包括验证规则、双向绑定的数据modelValue
 const props = defineProps({
     rules:Array as PropType<IRuleProp[]>,
-    modelVal:String,
+    modelValue:String,
 });
 // 响应式的信息，
 const inputRef = reactive({
-    val: "",//输入框绑定的值
+    val: props.modelValue || "",//输入框绑定的值
     message:'',//绑定的错误提示信息
     error:false,//输入信息是佛正确
 });
@@ -67,4 +68,8 @@ const emit = defineEmits(['update:modelValue']);
 const updateVal = () => {
     emit('update:modelValue',inputRef.val);
 }
+
+onMounted(() => {
+    emitter.emit('form-item-created',inputRef.val);
+})
 </script>

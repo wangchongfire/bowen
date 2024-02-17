@@ -15,7 +15,17 @@
     </div>
 </template>
 <script lang="ts" setup>
-import  { defineEmits } from 'vue';
+import  { defineEmits, onUnmounted } from 'vue';
+import {emitter} from '../hooks/UseMitt';
+
+const callback = (testVal:string) => {
+    console.log(testVal);
+}
+// 注册子组件创建完毕事件
+emitter.on('form-item-created',callback);
+onUnmounted(() => {
+    emitter.off('form-item-created',callback);
+})
 
 const emit = defineEmits(['form-submit']);
 const onFormSubmit = () => {
