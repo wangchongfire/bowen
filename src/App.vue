@@ -4,6 +4,7 @@
     <!-- <ColumnList :list="testData"/> -->
     <ValidateForm @form-submit="handleFormSubmit">
       <ValidateInput
+        ref="inputRef"
         type="text"
         v-model:modelValue="modelVal"
        :rules="emailRules">
@@ -33,11 +34,16 @@ const emailRules: IRuleProp[] = [
 ]
 // 表单数据之邮箱数据的响应式
 const modelVal = ref('init email');
+// 获取ValidateInput组件的实例
+const inputRef = ref<any>();
 // 处理表单组件注册的事件
 const handleFormSubmit = (flag:boolean) => {
   // alert(flag);
+  console.log(inputRef.value);
+  console.log(inputRef.value.validateInput());
   
 }
+
 
 // 传给首页header的数据
 const userData: IUser = {

@@ -3,19 +3,14 @@
         <slot></slot>
         <input 
         v-bind="$attrs"
-        @blur="validateEmail"
+        @blur="validateInput"
         @input="updateVal"
         v-model="inputRef.val" autosize placeholder="Please input" />
         <p v-if="inputRef.error" v-text="inputRef.message"></p>
     </div>
 </template>
 <script setup lang="ts">
-import { PropType, reactive,defineOptions,defineEmits,defineProps} from 'vue';
-
-// 设置根组件不继承属性
-defineOptions({
-    inheritAttrs:false,
-})
+import { PropType,defineExpose, reactive,defineOptions,defineEmits,defineProps} from 'vue';
 
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -24,12 +19,16 @@ interface IRuleProp{
     type:'required' | 'email';
     message:string;
 }
+
+// 设置根组件不继承属性
+defineOptions({
+    inheritAttrs:false,
+})
 // 接受父组件传来的值，包括验证规则、双向绑定的数据modelValue
 const props = defineProps({
     rules:Array as PropType<IRuleProp[]>,
     modelVal:String,
 });
-
 // 响应式的信息，
 const inputRef = reactive({
     val: "",//输入框绑定的值
@@ -37,7 +36,7 @@ const inputRef = reactive({
     error:false,//输入信息是佛正确
 });
 // 遍历传入的数组，检验输入值是否符合每一个规则
-const validateEmail = () => {
+const validateInput = ():boolean => {
     if(props.rules){
         let allPassed = props.rules.every(rule => {
             let passed = true;
@@ -56,9 +55,13 @@ const validateEmail = () => {
             return passed;
         })
         inputRef.error = !allPassed;
+        return allPassed;
     }
+    return true;
 }
-
+defineExpose({
+    validateInput,
+})
 const emit = defineEmits(['update:modelValue']);
 // 监听输入框的数据更新
 const updateVal = () => {
