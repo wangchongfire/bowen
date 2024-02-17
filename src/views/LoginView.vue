@@ -18,6 +18,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import ValidateForm from '../components/ValidateForm.vue'
 import ValidateInput, { IRuleProp } from '../components/ValidateInput.vue';
 
@@ -37,10 +38,13 @@ const passwordRules: IRuleProp = [
 
 // 获取ValidateInput组件的实例
 const inputRef = ref<any>();
+const router = useRouter();
 // 处理表单组件注册的事件
 const handleFormSubmit = (flag:boolean) => {
   console.log('表单提交结果',flag);
-  
+  if(flag){
+    router.push('/');
+  }
 }
 
 

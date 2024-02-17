@@ -6,7 +6,11 @@
           <img class="card-img-top rounded-circle border border-light my-3" :src="column.avatar" :alt="column.title" />
           <h5 class="card-title">{{ column.title }}</h5>
           <p class="card-text">{{ column.description }}</p>
-          <a class="btn btn-outline-primary" href="#">进入专栏</a>
+          <a class="btn btn-outline-primary" href="#">
+            <!-- <router-link :to="`column/${column.id}`">进入专栏</router-link> -->
+            <router-link :to="{name:'column',params:{id:column.id}}">进入专栏</router-link>
+
+          </a>
         </div>
       </div>
     </div>

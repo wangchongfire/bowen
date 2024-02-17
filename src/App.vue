@@ -6,7 +6,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import GlobalHeader, { IUser } from './components/GlobalHeader.vue'
 
 // 传给首页header的数据
