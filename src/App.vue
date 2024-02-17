@@ -10,9 +10,15 @@
        :rules="emailRules">
         <div>邮箱：</div>
       </ValidateInput>
-      <ValidateInput type="password">
+
+      <ValidateInput 
+      type="password"
+      v-model:modelValue="passwordVal"
+      :rules="passwordRules"
+      >
         <div>密码：</div>
       </ValidateInput>
+
       <template #submit>
         <el-button type="primary">Primary</el-button>
       </template>
@@ -35,16 +41,19 @@ const emailRules: IRuleProp[] = [
   { type: 'email', message: '请输入正确的电子邮箱格式' }
 ]
 
+// 表单数据之密码数据的响应式
+const passwordVal = ref('init password');
+const passwordRules: IRuleProp = [
+  { type: 'required', message: '密码不能为空' }
+]
+
 // 获取ValidateInput组件的实例
 const inputRef = ref<any>();
 // 处理表单组件注册的事件
 const handleFormSubmit = (flag:boolean) => {
-  // alert(flag);
-  console.log(inputRef.value);
-  console.log(inputRef.value.validateInput());
+  console.log('表单提交结果',flag);
   
 }
-
 
 // 传给首页header的数据
 const userData: IUser = {
