@@ -2,7 +2,7 @@
   <div id="app">
     <GlobalHeader :user="userData" />
     <!-- <ColumnList :list="testData"/> -->
-    <ValidateForm>
+    <ValidateForm @form-submit="handleFormSubmit">
       <ValidateInput
         type="text"
         v-model:modelValue="modelVal"
@@ -12,6 +12,9 @@
       <ValidateInput type="password">
         <div>密码：</div>
       </ValidateInput>
+      <template #submit>
+        <el-button type="primary">Primary</el-button>
+      </template>
     </ValidateForm>
   </div>
 </template>
@@ -30,6 +33,11 @@ const emailRules: IRuleProp[] = [
 ]
 // 表单数据之邮箱数据的响应式
 const modelVal = ref('init email');
+// 处理表单组件注册的事件
+const handleFormSubmit = (flag:boolean) => {
+  // alert(flag);
+  
+}
 
 // 传给首页header的数据
 const userData: IUser = {
