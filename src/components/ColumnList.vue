@@ -17,7 +17,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, PropType } from "vue";
+import { computed, PropType,defineProps } from "vue";
 
 interface ColumnProps {
   id: number;
@@ -26,7 +26,6 @@ interface ColumnProps {
   description: string;
 }
 
-// eslint-disable-next-line no-undef
 const props = defineProps({
   list: {
     type: Array as PropType<ColumnProps[]>,

@@ -29,20 +29,18 @@
 <script lang="ts" setup>
 import DropDown from './DropDown.vue';
 import DropdownItem from './DropdownItem.vue';
-import { PropType ,ref} from 'vue';
+import { computed ,ref} from 'vue';
+import {useStore} from 'vuex';
 interface IUser {
     isLogin: boolean;
     name?: string;
     id?: number;
 }
 
-// eslint-disable-next-line no-undef
-const props = defineProps({
-    user: {
-        type: Object as PropType<IUser>,
-        requerid: true
-    }
-});
+const store = useStore();
+const user = computed(() => {
+    return store.state.user;
+})
 
 // 传给DropdownItem的值
 const isDisabled = ref(true);

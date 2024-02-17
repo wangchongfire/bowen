@@ -21,6 +21,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ValidateForm from '../components/ValidateForm.vue'
 import ValidateInput, { IRuleProp } from '../components/ValidateInput.vue';
+import { useStore } from 'vuex';
 
 // 表单数据之邮箱数据的响应式
 const emailVal = ref('init email');
@@ -39,11 +40,13 @@ const passwordRules: IRuleProp = [
 // 获取ValidateInput组件的实例
 const inputRef = ref<any>();
 const router = useRouter();
+const store = useStore();
 // 处理表单组件注册的事件
 const handleFormSubmit = (flag:boolean) => {
-  console.log('表单提交结果',flag);
+  // console.log('表单提交结果',flag);
   if(flag){
     router.push('/');
+    store.commit('login');
   }
 }
 
