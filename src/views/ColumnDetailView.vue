@@ -3,11 +3,11 @@
     <div class="container">
         <div class="user">
             <div class="left">
-                <img :src="userDetail.avatar"/>
+                <img :src="img.src"/>
             </div>
             <div class="right">
-                <h1>{{ userDetail.title }}</h1>
-                <div>{{ userDetail.description }}</div>
+                <h1>{{ userDetail.list.title }}</h1>
+                <div>{{ userDetail.list.description }}</div>
             </div>
             <hr />
         </div>
@@ -16,10 +16,10 @@
                 <h1>{{ article.title }}</h1>
                 <div class="ar-body">
                     <div class="ar-left">
-                        <img :src="article.image"/>
+                        <!-- <img :src="article.image.url"/> -->
                     </div>
                     <div class="ar-right">
-                        {{ article.content }}
+                        {{ article.excerpt }}
                     </div>
                 </div>
                 <div class="ar-time">
@@ -30,63 +30,88 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { GlobalDataProps } from "@/store";
-import { computed } from "vue";
+import { GlobalDataProps ,PostProps} from "@/store";
+import { computed, onMounted, ref,reactive, onBeforeMount, watchEffect, toRefs } from "vue";
 import { useRoute } from "vue-router";
 import {useStore} from 'vuex';
+import axios from 'axios';
 
 const route = useRoute();
 const store = useStore<GlobalDataProps>();
 const id = route.params.id;
 
-const userDetail = computed(() => {
-    return store.getters.getColumnById(parseInt(id as string));
+const userDetail = reactive({list:[]});
+const img = reactive({src:''});
+const getColumn = async () => {
+    const columnData = await axios.get(`/columns/${id}`);
+    userDetail.list = columnData.data.data;
+    img.src = columnData.data.data.avatar.url;
+};
+
+watchEffect(() => {
+    getColumn();
 });
 
-const userArticles = computed(() => {
-    return store.getters.getArticlesById(parseInt(id as string));
+onMounted(() => {
+    store.dispatch('fetchPosts',id);
 })
+
+const userArticles = computed(() => {
+    return store.state.posts;
+});
+
 </script>
 <style lang="scss">
-.container{
-    width:1100px;
+.container {
+    width: 1100px;
 
-    .user{
+    .user {
         display: flex;
         justify-content: space-around;
         border-bottom: 1px solid #524d4d;
-        .left{
+
+        .left {
             width: 200px;
             height: 200px;
-            img{
+
+            img {
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
             }
         }
-        .right{
+
+        .right {
             width: 800px;
             height: 200px;
             padding-top: 30px;
             padding-left: 30px;
-            h1{
+
+            h1 {
                 margin-bottom: 20px;
             }
         }
     }
 
-    .articles{
+    .articles {
         padding: 30px;
-        .article{
+
+        .article {
             border: 1px solid #8d8181;
             margin-top: 30px;
-            .ar-body{
+
+            .ar-body {
                 display: flex;
-                .ar-right{
+                .ar-left{
+                    img{
+                        width: 100%;
+                    }
+                }
+
+                .ar-right {
                     margin: 10px 30px;
                 }
             }
         }
     }
-}
-</style>
+}</style>
