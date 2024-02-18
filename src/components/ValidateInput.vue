@@ -2,7 +2,7 @@
     <div class="form-input">
         <slot></slot>
         <input 
-        v-if="tag === 'input'"
+        v-if="tag !== 'textarea'"
         v-bind="$attrs"
         @blur="validateInput"
         @input="updateVal"
