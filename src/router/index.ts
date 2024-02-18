@@ -19,6 +19,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/column/:id',
     name: 'column',
     component: () => import('../views/ColumnDetailView.vue')
+  },
+  {
+    path: '/create',
+    name: 'create',
+    component: () => import('../views/CreatePostView.vue')
   }
 ]
 

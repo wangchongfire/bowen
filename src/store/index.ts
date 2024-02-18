@@ -10,6 +10,7 @@ export interface GlobalDataProps{
     columns:ColumnProps[];
     posts:PostProps[];
     user:UserProps;
+    columnId?:number;
 }
 
 export default createStore<GlobalDataProps>({

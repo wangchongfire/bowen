@@ -13,7 +13,7 @@
             <div v-else>
                 <DropDown :name="user.name">
                     <DropdownItem>
-                        <a>新建文章</a>
+                        <router-link to="/create">新建文章</router-link>
                     </DropdownItem>
                     <DropdownItem :disabled="isDisabled">
                         <a>管理账户</a>

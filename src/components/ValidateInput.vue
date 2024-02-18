@@ -2,10 +2,17 @@
     <div class="form-input">
         <slot></slot>
         <input 
+        v-if="tag === 'input'"
         v-bind="$attrs"
         @blur="validateInput"
         @input="updateVal"
-        v-model="inputRef.val" autosize placeholder="Please input" />
+        v-model="inputRef.val" autosize />
+        <textarea
+        v-else
+        v-bind="$attrs"
+        @blur="validateInput"
+        @input="updateVal"
+        v-model="inputRef.val" autosize />
         <p v-if="inputRef.error" v-text="inputRef.message"></p>
     </div>
 </template>
@@ -20,7 +27,7 @@ interface IRuleProp{
     type:'required' | 'email';
     message:string;
 }
-
+type TagType = 'input' | 'textarea';
 // 设置根组件不继承属性
 defineOptions({
     inheritAttrs:false,
@@ -29,6 +36,10 @@ defineOptions({
 const props = defineProps({
     rules:Array as PropType<IRuleProp[]>,
     modelValue:String,
+    tag:{
+        type:String as PropType<TagType>,
+        default:'text',
+    }
 });
 // 响应式的信息，
 const inputRef = reactive({
@@ -73,3 +84,15 @@ onMounted(() => {
     emitter.emit('form-item-created',validateInput);
 })
 </script>
+<style lang="scss" scoped>
+.form-input{
+    margin: 30px 0;
+    input{
+        width:100%;
+    }
+    textarea{
+        width: 100%;
+        height: 400px;
+    }
+}
+</style>

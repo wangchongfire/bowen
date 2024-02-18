@@ -1,7 +1,10 @@
 <template>
     <div>login view</div>
-    <div>
+    <div class="login">
         <ValidateForm @form-submit="handleFormSubmit">
+            <template #title>
+              登录博文专栏
+            </template>
             <ValidateInput ref="inputRef" type="text" v-model:modelValue="emailVal" :rules="emailRules">
                 <div>邮箱：</div>
             </ValidateInput>
@@ -11,7 +14,7 @@
             </ValidateInput>
 
             <template #submit>
-                <el-button type="primary">Primary</el-button>
+                <el-button type="primary">登录</el-button>
             </template>
         </ValidateForm>
     </div>
@@ -49,6 +52,10 @@ const handleFormSubmit = (flag:boolean) => {
     store.commit('login');
   }
 }
-
-
 </script>
+<style lang="scss" scoped>
+.login{
+  width: 400px;
+  margin: 0 auto;
+}
+</style>
