@@ -19,6 +19,14 @@ export default createStore<GlobalDataProps>({
     user:{isLogin:false},
   },
   getters: {
+    getColumnById : (state) => (id:number) => {
+      return state.columns[id - 1];
+    },
+    getArticlesById : (state) => (id:number) => {
+      return state.posts.filter((article) => {
+        return article.columnId === id;
+      });
+    }
   },
   mutations: {
     login(state){
