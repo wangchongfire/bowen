@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <h1 v-if="store.state.error.status">{{ store.state.error.message }}</h1>
     <LoaderComponent v-if="store.state.loading"></LoaderComponent>
     <GlobalHeader :user="user"/>
     <router-view></router-view>
@@ -11,9 +10,10 @@
 import GlobalHeader from './components/GlobalHeader.vue';
 import {useStore} from 'vuex';
 import LoaderComponent from './components/LoaderComponent.vue';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import {GlobalDataProps} from './store';
 import axios from 'axios';
+import {createMessage,MessageType} from './hooks/UseCreateMessage'
 
 const store = useStore<GlobalDataProps>();
 const user = computed(() => store.state.user);
@@ -25,6 +25,14 @@ onMounted(() => {
     // 将获取到的token设置到axios的通用请求头中
     axios.defaults.headers.common['Authorization'] = `Bearer ` + token.value;
     store.dispatch('fetchCurUser');
+  }
+});
+
+const error = computed(() => store.state.error);
+watch(() => error.value.status,() => {
+  const {status,message} = error.value;
+  if(status && message){
+    createMessage('error',message);
   }
 })
 </script>

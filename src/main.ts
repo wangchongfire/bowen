@@ -23,6 +23,9 @@ axios.interceptors.request.use(config => {
   //正在请求时，显示Loader组件
   store.state.loading = true;
 
+  // 刚发起请求时，将全局状态中的error设置为false
+  store.commit('setError',{status:false,message:''});
+
   // get 请求，添加到 url 中
   config.params = { ...config.params, icode: '71E023A54874772F' }
   // 其他请求，添加到 body 中

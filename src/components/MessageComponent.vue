@@ -2,19 +2,23 @@
     <Teleport to="#message">
         <div v-if="isVisible" class="message">
             {{ message }}
-            <el-icon @click="hide" color="red"><CircleCloseFilled /></el-icon>
+            <el-icon class="icon" @click="hide" color="red"><CircleCloseFilled /></el-icon>
         </div>
     </Teleport>
 </template>
 <script setup lang="ts">
 import { CircleCloseFilled} from "@element-plus/icons-vue";
-import { ref,defineProps, onUnmounted } from "vue";
+import { ref,defineProps, onUnmounted, PropType } from "vue";
+import {MessageType} from '../hooks/UseCreateMessage';
 
 const isVisible = ref(true);
 const props = defineProps({
     message:{
         type:String,
         required:true,
+    },
+    type:{
+        type:String as PropType<MessageType>,
     }
 })
 
@@ -42,5 +46,10 @@ onUnmounted(() => {
     transform: translateX(-50%);
     text-align: center;
     line-height: 50px;
+
+    .el-icon{
+        width: 5px;
+        height: 5px;
+    }
 }
 </style>

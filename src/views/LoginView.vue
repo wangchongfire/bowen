@@ -1,6 +1,5 @@
 <template>
   <div>login view</div>
-  <MessageComponent v-if="errorMessage" :message="errorMessage"></MessageComponent>
   <div class="login">
     <ValidateForm @form-submit="handleFormSubmit">
       <template #title>
@@ -26,7 +25,7 @@ import { useRouter } from 'vue-router';
 import ValidateForm from '../components/ValidateForm.vue'
 import ValidateInput, { IRuleProp } from '../components/ValidateInput.vue';
 import { useStore } from 'vuex';
-import MessageComponent from '@/components/MessageComponent.vue';
+import {createMessage,MessageType} from '../hooks/UseCreateMessage';
 
 // 表单数据之邮箱数据的响应式
 const emailVal = ref('111@test.com');
@@ -57,7 +56,11 @@ const handleFormSubmit = (flag: boolean) => {
       email: emailVal.value,
       password: passwordVal.value,
     }).then(() => {
-      router.push('/');
+      // 使用代码调用组件
+      createMessage('success','登录成功，2秒后跳转！');
+      setTimeout(() => {
+        router.push('/');
+      },2000);
     }).catch(err => {
       console.log('login组件error',err);
       errorMessage.value = err;
