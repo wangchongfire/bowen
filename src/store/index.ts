@@ -14,11 +14,14 @@ export interface ColumnProps {
   avatar?: ImageProps;
   description: string;
 }
-
-interface UserProps {
+export interface UserProps {
   isLogin: boolean;
-  name?: string;
-  id?: number;
+  nickName?: string;
+  _id?: string;
+  column?: string;
+  email?: string;
+  avatar?: ImageProps;
+  description?: string;
 }
 export interface PostProps {
   _id?: string;
@@ -44,7 +47,7 @@ export default createStore<GlobalDataProps>({
     token:'',
     columns: [],
     posts: [],
-    user: { isLogin: false, name: 'jack' },
+    user: { isLogin: false},
     loading:false,
   },
   getters: {
@@ -73,7 +76,13 @@ export default createStore<GlobalDataProps>({
       state.posts = rawData.data.list;
     },
     login(state,rawData){
-      state.token = rawData;
+      state.token = rawData;//更新全局状态中的token
+
+      // 将获取到的token设置到axios的通用请求头中
+      axios.defaults.headers.common['Authorization'] = `Bearer ` + rawData;
+    },
+    fetchCurUser(state,rawData){
+        state.user = {isLogin:true,...rawData};
     }
   },
   actions: {
@@ -90,6 +99,15 @@ export default createStore<GlobalDataProps>({
     async login(context,rawData){
       const {data} = await axios.post('/user/login',rawData);
       context.commit('login',data.data.token);      
+    },
+    async fetchCurUser(context){
+      const {data} = await axios.get('/user/current');
+      context.commit('fetchCurUser',data.data);
+    },
+    loginAndFetch(context,rawData){
+      return context.dispatch('login',rawData).then(() => {
+        return context.dispatch('fetchCurUser')
+      })
     }
   },
   modules: {

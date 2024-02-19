@@ -1,23 +1,23 @@
 <template>
-    <div>login view</div>
-    <div class="login">
-        <ValidateForm @form-submit="handleFormSubmit">
-            <template #title>
-              登录博文专栏
-            </template>
-            <ValidateInput ref="inputRef" type="text" v-model:modelValue="emailVal" :rules="emailRules">
-                <div>邮箱：</div>
-            </ValidateInput>
+  <div>login view</div>
+  <div class="login">
+    <ValidateForm @form-submit="handleFormSubmit">
+      <template #title>
+        登录博文专栏
+      </template>
+      <ValidateInput ref="inputRef" type="text" v-model:modelValue="emailVal" :rules="emailRules">
+        <div>邮箱：</div>
+      </ValidateInput>
 
-            <ValidateInput type="password" v-model:modelValue="passwordVal" :rules="passwordRules">
-                <div>密码：</div>
-            </ValidateInput>
+      <ValidateInput type="password" v-model:modelValue="passwordVal" :rules="passwordRules">
+        <div>密码：</div>
+      </ValidateInput>
 
-            <template #submit>
-                <el-button type="primary">登录</el-button>
-            </template>
-        </ValidateForm>
-    </div>
+      <template #submit>
+        <el-button type="primary">登录</el-button>
+      </template>
+    </ValidateForm>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
@@ -45,12 +45,12 @@ const inputRef = ref<any>();
 const router = useRouter();
 const store = useStore();
 // 处理表单组件注册的事件
-const handleFormSubmit = (flag:boolean) => {
+const handleFormSubmit = (flag: boolean) => {
   // console.log('表单提交结果',flag);
-  if(flag){
-    store.dispatch('login',{
-      email:emailVal.value,
-      password:passwordVal.value,
+  if (flag) {
+    store.dispatch('loginAndFetch', {
+      email: emailVal.value,
+      password: passwordVal.value,
     }).then(() => {
       router.push('/');
     })
@@ -58,7 +58,7 @@ const handleFormSubmit = (flag:boolean) => {
 }
 </script>
 <style lang="scss" scoped>
-.login{
+.login {
   width: 400px;
   margin: 0 auto;
 }

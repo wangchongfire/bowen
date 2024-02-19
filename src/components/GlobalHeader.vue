@@ -11,7 +11,7 @@
                 <el-button type="info">注册</el-button>
             </div>
             <div v-else>
-                <DropDown :name="user.name">
+                <DropDown :name="user.nickName">
                     <DropdownItem>
                         <router-link to="/create">新建文章</router-link>
                     </DropdownItem>
@@ -29,17 +29,14 @@
 <script lang="ts" setup>
 import DropDown from './DropDown.vue';
 import DropdownItem from './DropdownItem.vue';
-import { computed ,ref} from 'vue';
-import {useStore} from 'vuex';
-interface IUser {
-    isLogin: boolean;
-    name?: string;
-    id?: number;
-}
+import { computed ,ref,defineProps, PropType} from 'vue';
+import {UserProps} from '../store';
 
-const store = useStore();
-const user = computed(() => {
-    return store.state.user;
+const props = defineProps({
+    user:{
+        type:Object as PropType<UserProps>,
+        required:true,
+    }
 })
 
 // 传给DropdownItem的值

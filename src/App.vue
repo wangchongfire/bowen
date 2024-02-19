@@ -1,23 +1,21 @@
 <template>
   <div id="app">
     <LoaderComponent v-if="store.state.loading"></LoaderComponent>
-    <GlobalHeader :user="userData" />
+    <GlobalHeader :user="user"/>
     <router-view></router-view>
   </div>
 </template>
 
 <script lang="ts" setup>
-import GlobalHeader, { IUser } from './components/GlobalHeader.vue';
+import GlobalHeader from './components/GlobalHeader.vue';
 import {useStore} from 'vuex';
 import LoaderComponent from './components/LoaderComponent.vue';
+import { computed } from 'vue';
 
 const store = useStore();
-// 传给首页header的数据
-const userData: IUser = {
-  isLogin: false,
-  name: 'jack',
-  id: 101
-}
+const user = computed(() => {
+  return store.state.user;
+})
 </script>
 
 <style lang="scss" scoped>
