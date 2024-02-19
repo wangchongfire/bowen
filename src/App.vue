@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1 v-if="store.state.error.status">{{ store.state.error.message }}</h1>
     <LoaderComponent v-if="store.state.loading"></LoaderComponent>
     <GlobalHeader :user="user"/>
     <router-view></router-view>

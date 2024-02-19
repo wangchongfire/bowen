@@ -34,7 +34,13 @@ export interface PostProps {
   author?: string | UserProps;
   isHTML?: boolean;
 }
+
+export interface GlobaErrorProps{
+  status:boolean;
+  message?:string;
+}
 export interface GlobalDataProps {
+  error:GlobaErrorProps;
   columns: ColumnProps[];
   posts: PostProps[];
   user: UserProps;
@@ -44,6 +50,7 @@ export interface GlobalDataProps {
 }
 export default createStore<GlobalDataProps>({
   state: {
+    error:{status:false},
     // 初始化全局状态中的token
     token: localStorage.getItem('token') || '',
     columns: [],
@@ -66,6 +73,9 @@ export default createStore<GlobalDataProps>({
   mutations: {
     setLoading(state,status){
       state.loading = status;
+    },
+    setError(state,e:GlobaErrorProps){
+      state.error = e;
     },
     // login(state) {
     //   state.user = { isLogin: true, name: 'jack' };

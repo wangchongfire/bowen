@@ -45,5 +45,6 @@ onUnmounted(() => {
     z-index: 100;
     background: black;
     opacity: 0.6;
+    top: 0;
 }
 </style>

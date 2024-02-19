@@ -53,6 +53,9 @@ const handleFormSubmit = (flag: boolean) => {
       password: passwordVal.value,
     }).then(() => {
       router.push('/');
+    }).catch(err => {
+      console.log('login组件error',err);
+      
     })
   }
 }
