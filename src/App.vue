@@ -13,7 +13,8 @@ import LoaderComponent from './components/LoaderComponent.vue';
 import { computed, onMounted, watch } from 'vue';
 import {GlobalDataProps} from './store';
 import axios from 'axios';
-import {createMessage,MessageType} from './hooks/UseCreateMessage'
+import {createMessage,MessageType} from './hooks/UseCreateMessage';
+import VNode from './components/VNode';
 
 const store = useStore<GlobalDataProps>();
 const user = computed(() => store.state.user);
