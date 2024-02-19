@@ -44,7 +44,8 @@ export interface GlobalDataProps {
 }
 export default createStore<GlobalDataProps>({
   state: {
-    token:'',
+    // 初始化全局状态中的token
+    token: localStorage.getItem('token') || '',
     columns: [],
     posts: [],
     user: { isLogin: false},
@@ -77,6 +78,7 @@ export default createStore<GlobalDataProps>({
     },
     login(state,rawData){
       state.token = rawData;//更新全局状态中的token
+      localStorage.setItem('token',rawData);//将首次登录获取的token存储到localStorage中
 
       // 将获取到的token设置到axios的通用请求头中
       axios.defaults.headers.common['Authorization'] = `Bearer ` + rawData;
