@@ -1,5 +1,6 @@
 <template>
   <div>login view</div>
+  <MessageComponent v-if="errorMessage" :message="errorMessage"></MessageComponent>
   <div class="login">
     <ValidateForm @form-submit="handleFormSubmit">
       <template #title>
@@ -25,6 +26,7 @@ import { useRouter } from 'vue-router';
 import ValidateForm from '../components/ValidateForm.vue'
 import ValidateInput, { IRuleProp } from '../components/ValidateInput.vue';
 import { useStore } from 'vuex';
+import MessageComponent from '@/components/MessageComponent.vue';
 
 // 表单数据之邮箱数据的响应式
 const emailVal = ref('111@test.com');
@@ -39,6 +41,9 @@ const passwordVal = ref('111111');
 const passwordRules: IRuleProp = [
   { type: 'required', message: '密码不能为空' }
 ]
+
+// 请求出错误时的错误信息
+const errorMessage = ref('');
 
 // 获取ValidateInput组件的实例
 const inputRef = ref<any>();
@@ -55,7 +60,7 @@ const handleFormSubmit = (flag: boolean) => {
       router.push('/');
     }).catch(err => {
       console.log('login组件error',err);
-      
+      errorMessage.value = err;
     })
   }
 }
