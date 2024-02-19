@@ -37,12 +37,14 @@ export interface GlobalDataProps {
   user: UserProps;
   columnId?: number;
   loading:boolean;
+  token:string;
 }
 export default createStore<GlobalDataProps>({
   state: {
+    token:'',
     columns: [],
     posts: [],
-    user: { isLogin: true, name: 'jack' },
+    user: { isLogin: false, name: 'jack' },
     loading:false,
   },
   getters: {
@@ -61,14 +63,17 @@ export default createStore<GlobalDataProps>({
     setLoading(state,status){
       state.loading = status;
     },
-    login(state) {
-      state.user = { isLogin: true, name: 'jack' };
-    },
+    // login(state) {
+    //   state.user = { isLogin: true, name: 'jack' };
+    // },
     fetchColumns(state, rawData) {
       state.columns = rawData.data.list;
     },
     fetchPosts(state, rawData) {
       state.posts = rawData.data.list;
+    },
+    login(state,rawData){
+      state.token = rawData;
     }
   },
   actions: {
@@ -81,6 +86,10 @@ export default createStore<GlobalDataProps>({
       axios.get(`/columns/${id}/posts`).then(res => {
         context.commit('fetchPosts', res.data);
       })
+    },
+    async login(context,rawData){
+      const {data} = await axios.post('/user/login',rawData);
+      context.commit('login',data.data.token);      
     }
   },
   modules: {

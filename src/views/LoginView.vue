@@ -27,7 +27,7 @@ import ValidateInput, { IRuleProp } from '../components/ValidateInput.vue';
 import { useStore } from 'vuex';
 
 // 表单数据之邮箱数据的响应式
-const emailVal = ref('init email');
+const emailVal = ref('111@test.com');
 // 传给表单输入框验证的 校验规则
 const emailRules: IRuleProp[] = [
   { type: 'required', message: '电子邮箱地址不能为空' },
@@ -35,7 +35,7 @@ const emailRules: IRuleProp[] = [
 ]
 
 // 表单数据之密码数据的响应式
-const passwordVal = ref('init password');
+const passwordVal = ref('111111');
 const passwordRules: IRuleProp = [
   { type: 'required', message: '密码不能为空' }
 ]
@@ -48,8 +48,12 @@ const store = useStore();
 const handleFormSubmit = (flag:boolean) => {
   // console.log('表单提交结果',flag);
   if(flag){
-    router.push('/');
-    store.commit('login');
+    store.dispatch('login',{
+      email:emailVal.value,
+      password:passwordVal.value,
+    }).then(() => {
+      router.push('/');
+    })
   }
 }
 </script>
