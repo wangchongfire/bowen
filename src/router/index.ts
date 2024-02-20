@@ -28,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'create',
     component: () => import('../views/CreatePostView.vue'),
     meta:{requireLogin:true},//
+  },
+  {
+    path: '/posts/:id',
+    name: 'post',
+    component: () => import('../views/PostDetailView.vue')
   }
 ]
 

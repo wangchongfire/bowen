@@ -13,7 +13,11 @@
         </div>
         <div class="articles">
             <div v-for="(article,index) in userArticles" :key="index" class="article">
-                <h1>{{ article.title }}</h1>
+                <h1>
+                    <router-link :to="`/posts/${article._id}`">
+                        {{ article.title }}
+                    </router-link>
+                </h1>
                 <div class="ar-body">
                     <div class="ar-left">
                         <!-- <img :src="article.image.url"/> -->
@@ -59,6 +63,8 @@ onMounted(() => {
 const userArticles = computed(() => {
     return store.state.posts;
 });
+// console.log('专栏列表页面');
+// console.log(store.state.posts);
 
 </script>
 <style lang="scss">
