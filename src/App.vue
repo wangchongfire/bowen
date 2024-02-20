@@ -17,18 +17,8 @@ import {createMessage,MessageType} from './hooks/UseCreateMessage';
 import VNode from './components/VNode';
 
 const store = useStore<GlobalDataProps>();
-const user = computed(() => store.state.user);
-////在首页加载时获取token
-const token = computed(() => store.state.token);//
-onMounted(() => {
-  // 如果用户没有登陆，但是浏览器中有token，那么自动登录
-  if(!user.value.isLogin && token.value){
-    // 将获取到的token设置到axios的通用请求头中
-    axios.defaults.headers.common['Authorization'] = `Bearer ` + token.value;
-    store.dispatch('fetchCurUser');
-  }
-});
 
+const user = computed(() => store.state.user);
 const error = computed(() => store.state.error);
 watch(() => error.value.status,() => {
   const {status,message} = error.value;
@@ -36,6 +26,18 @@ watch(() => error.value.status,() => {
     createMessage('error',message);
   }
 })
+
+// 路由判断的逻辑移到router配置文件中，下面代码废除
+////在首页加载时获取token
+// const token = computed(() => store.state.token);//
+// onMounted(() => {
+//   // 如果用户没有登陆，但是浏览器中有token，那么自动登录
+//   if(!user.value.isLogin && token.value){
+//     // 将获取到的token设置到axios的通用请求头中
+//     axios.defaults.headers.common['Authorization'] = `Bearer ` + token.value;
+//     store.dispatch('fetchCurUser');
+//   }
+// });
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,7 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import {useStore} from 'vuex'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import {useStore} from 'vuex';
+import axios from 'axios';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,13 +38,36 @@ const router = createRouter({
 
 router.beforeEach((to,from,next) => {
   const store = useStore();
-  console.log();
-  if(!store.state.user.isLogin && to.meta.requireLogin){
-    next({name:'login'});
-  }else if(store.state.user.isLogin && to.meta.requireNotLogin){
-    next('/');
-  } else {
-    next();
+  const {user,token} = store.state;
+  const {requireLogin,requireNotLogin} = to.meta;
+
+  if(!user.isLogin){
+    if(token){
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      store.dispatch('fetchCurUser').then(() => {
+        if(requireNotLogin){
+          next('/');
+        }else{
+          next();
+        }
+      }).catch(err => {
+        console.log(err);
+        localStorage.removeItem('token');
+        next('login');
+      })
+    }else{
+      if(requireLogin){
+        next('login');
+      }else{
+        next();
+      }
+    }
+  }else{
+    if(requireNotLogin){
+      next('/');
+    }else{
+      next();
+    }
   }
 })
 
