@@ -20,17 +20,27 @@
         </div>
         <div class="content" v-html="post?.content">
         </div>
+        <div class="editor" v-if="isEditorVisible">
+            <el-button type="success">
+                <router-link 
+                :to="{name:'create',query:{id:post._id}}"
+                >
+                    编辑
+                </router-link>
+            </el-button>
+            <el-button type="danger">删除</el-button>
+        </div>
     </div>
 </template>
 <script setup lang="ts">
-import { computed, reactive, toRefs, watchEffect } from "vue";
+import {  computed, reactive, toRefs, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import axios from 'axios';
-import MarkDownIt from 'markdown-it';
-
+import { useStore } from "vuex";
+import { UserProps } from "../store/index";
 
 const route = useRoute();
-const md = new MarkDownIt();
+const store = useStore();
 
 const postObj = reactive({post:{}});
 const {post} = toRefs(postObj);
@@ -41,6 +51,14 @@ const getCurPost = async () => {
 watchEffect(() => {
     getCurPost();
 });
+const isEditorVisible = computed(() => {
+    const userId = store.state.user._id;
+    if(post.value && post.value.author){
+        const curAuthor = postObj.post.author as UserProps;
+        return curAuthor._id === userId;
+    }
+    return false; 
+})
 </script>
 <style lang="scss" scoped>
 .post-detail{
