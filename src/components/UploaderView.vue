@@ -4,10 +4,20 @@
     class="input"
     />
     <button @click="triggerUpload">
-        <span v-if="fileStatus==='ready'">点击上传</span>
-        <span v-else-if="fileStatus==='loading'">正在上传</span>
-        <span v-else-if="fileStatus==='success'">上传成功</span>
-        <span v-else-if="fileStatus==='error'">上传失败</span>
+        <slot  v-if="fileStatus==='ready'" name="ready">
+            <span>点击上传</span>
+        </slot>
+        <slot v-else-if="fileStatus==='loading'" name="loading">
+            <span>正在上传...</span>
+        </slot>
+        <slot
+        :uplodaedData="uploadData"
+        v-else-if="fileStatus==='success'" name="succss">
+            <span>上传成功</span>
+        </slot>
+        <slot v-else-if="fileStatus==='error'" name="error">
+            <span>上传失败</span>
+        </slot>
     </button>
 </template>
 <script lang="ts" setup>
@@ -28,6 +38,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['file-upload-success','file-upload-fail']);
 
+const uploadData = ref();
 const fileInput = ref<null | HTMLInputElement>(null);
 const fileStatus = ref<UploadStatus>('ready');
 const triggerUpload = () => {
@@ -57,6 +68,7 @@ const handleFileChange = (e:Event) => {
         }).then(res => {
             // console.log(res);
             fileStatus.value = 'success';
+            uploadData.value = res.data;
             emit('file-upload-success',res.data);
         }).catch(err => {
             // console.log(err);

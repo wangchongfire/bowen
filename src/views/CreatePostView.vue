@@ -5,7 +5,12 @@
         @file-upload-success="onFileUploadSuccess"
         @file-upload-fail="onFileUploadFail"
         action="/upload" 
-        :beforeUpload="beforeUpload"></UploaderView>
+        :beforeUpload="beforeUpload">
+            <template #succss="soltProps"> 
+                <img :src="soltProps.uplodaedData.data.url"/>
+            </template>
+        </UploaderView>
+        
         <ValidateForm @form-submit="handleFormSubmit">
             <template #title>
                 <div>新建文章</div>
