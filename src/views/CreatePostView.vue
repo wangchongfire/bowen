@@ -41,7 +41,10 @@ import { ref } from 'vue';
 import axios from 'axios';
 import UploaderView from '@/components/UploaderView.vue';
 import {createMessage} from '../hooks/UseCreateMessage';
-import {ResponseType,ImageProps} from '../store/index'
+import {ResponseType,ImageProps,PostProps} from '../store/index';
+import {beforeUploadCheck} from '../hooks/helper';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 const titleRule: IRuleProp[] = [
     { type: 'required', message: '文章标题不能为空' }
@@ -50,47 +53,77 @@ const detailRule: IRuleProp[] = [
     { type: 'required', message: '文章详情不能为空' }
 ]
 
+const store = useStore();
+const router = useRouter();
+
 const titleVal = ref('');
 const detailVal = ref('');
-const handleFormSubmit = (result:boolean) => {
-    console.log('发表文章校验结果：',result);
-    
-}
+let imageId = '';
 
-const handleFileChange = (e:Event) => {
-    const target = e.target as HTMLInputElement;
-    const files = target.files;
-    if(files){
-        const uploadedFile = files[0];
-        const formData = new FormData();
-        formData.append(uploadedFile.name,uploadedFile);
-        axios.post('/upload',formData,{
-            headers:{
-                'Content-Type': 'multipart/form-data'
+// 
+const handleFormSubmit = (result:boolean) => {
+    if(result){
+        const {column,_id} = store.state.user;
+        if(column){
+            const newPost:PostProps = {
+                title:titleVal.value,
+                content:detailVal.value,
+                column,
+                author:_id,
             }
-        }).then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-            
-        })
+            if(imageId){
+                newPost.image = imageId;
+            }
+            store.dispatch('createPost',newPost).then(() => {
+                createMessage('success','发表成功，2秒后跳转到文章！');
+                setTimeout(() => {
+                    router.push({name:'column',params:{id:column}});
+                },2000);
+            })
+        }
     }
 }
 
 const beforeUpload = (file:File):boolean => {
-    const isJpg = file.type === 'image/jpeg';
-    if(!isJpg){
-        createMessage('error',"图片只能是jpg格式");
+    const result = beforeUploadCheck(file,{format:['image/jpeg', 'image/png'],size:1});
+    const {passed,error} = result;
+    if(error === 'format'){
+        createMessage('error','上传图片只能是 JPG/PNG 格式!');
     }
-    return isJpg;
+    if(error === 'size'){
+        createMessage('error','上传图片大小不能超过 1Mb!');
+    }
+    return passed;
 }
 
 const onFileUploadSuccess = (data:ResponseType<ImageProps>):void => {
+    imageId = data.data._id;//图片上传成功，将id取出来用于后序提交文章
     createMessage('success',`上传图片ID为${data.data._id}`);
 }
 const onFileUploadFail = (err) => {
     createMessage('error',err);
 }
+
+// 测试代码，已经废弃
+// const handleFileChange = (e:Event) => {
+//     const target = e.target as HTMLInputElement;
+//     const files = target.files;
+//     if(files){
+//         const uploadedFile = files[0];
+//         const formData = new FormData();
+//         formData.append(uploadedFile.name,uploadedFile);
+//         axios.post('/upload',formData,{
+//             headers:{
+//                 'Content-Type': 'multipart/form-data'
+//             }
+//         }).then(res => {
+//             console.log(res);
+//         }).catch(err => {
+//             console.log(err);
+            
+//         })
+//     }
+// }
 </script>
 <style lang="scss" scoped>
 </style>

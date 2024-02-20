@@ -126,6 +126,9 @@ export default createStore<GlobalDataProps>({
       return context.dispatch('login',rawData).then(() => {
         return context.dispatch('fetchCurUser')
       })
+    },
+    async createPost(context,rawData){
+      axios.post('/posts',rawData);
     }
   },
   modules: {
