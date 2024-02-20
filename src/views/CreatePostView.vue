@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        <input type="file" name="file" @change.prevent="handleFileChange"/>
+        <!-- <input type="file" name="file" @change.prevent="handleFileChange"/> -->
+        <UploaderView action="/upload"></UploaderView>
         <ValidateForm @form-submit="handleFormSubmit">
             <template #title>
                 <div>新建文章</div>
@@ -29,6 +30,7 @@ import ValidateInput, { IRuleProp } from '@/components/ValidateInput.vue';
 import ValidateForm from '@/components/ValidateForm.vue';
 import { ref } from 'vue';
 import axios from 'axios';
+import UploaderView from '@/components/UploaderView.vue';
 
 const titleRule: IRuleProp[] = [
     { type: 'required', message: '文章标题不能为空' }
