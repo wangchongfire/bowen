@@ -1,7 +1,11 @@
 <template>
     <div class="container">
         <!-- <input type="file" name="file" @change.prevent="handleFileChange"/> -->
-        <UploaderView action="/upload"></UploaderView>
+        <UploaderView 
+        @file-upload-success="onFileUploadSuccess"
+        @file-upload-fail="onFileUploadFail"
+        action="/upload" 
+        :beforeUpload="beforeUpload"></UploaderView>
         <ValidateForm @form-submit="handleFormSubmit">
             <template #title>
                 <div>新建文章</div>
@@ -31,6 +35,8 @@ import ValidateForm from '@/components/ValidateForm.vue';
 import { ref } from 'vue';
 import axios from 'axios';
 import UploaderView from '@/components/UploaderView.vue';
+import {createMessage} from '../hooks/UseCreateMessage';
+import {ResponseType,ImageProps} from '../store/index'
 
 const titleRule: IRuleProp[] = [
     { type: 'required', message: '文章标题不能为空' }
@@ -64,6 +70,21 @@ const handleFileChange = (e:Event) => {
             
         })
     }
+}
+
+const beforeUpload = (file:File):boolean => {
+    const isJpg = file.type === 'image/jpeg';
+    if(!isJpg){
+        createMessage('error',"图片只能是jpg格式");
+    }
+    return isJpg;
+}
+
+const onFileUploadSuccess = (data:ResponseType<ImageProps>):void => {
+    createMessage('success',`上传图片ID为${data.data._id}`);
+}
+const onFileUploadFail = (err) => {
+    createMessage('error',err);
 }
 </script>
 <style lang="scss" scoped>

@@ -1,6 +1,12 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
 
+export interface ResponseType<T = object>{
+  code:number;
+  msg:string;
+  data:T,
+}
+
 export interface ImageProps {
   _id?: string;
   url?: string;

@@ -11,16 +11,23 @@
     </button>
 </template>
 <script lang="ts" setup>
-import { ref, defineProps } from 'vue'
+import { ref, defineProps,defineEmits, PropType } from 'vue'
 import axios from 'axios';
+
+type UploadStatus = 'ready' | 'loading' | 'success' | 'error';
+type CheckFile = (file:File) => boolean;
+
 
 const props = defineProps({
     action:{
         type:String,
+    },
+    beforeUpload:{
+        type:Function as PropType<CheckFile>,
     }
-})
+});
+const emit = defineEmits(['file-upload-success','file-upload-fail']);
 
-type UploadStatus = 'ready' | 'loading' | 'success' | 'error';
 const fileInput = ref<null | HTMLInputElement>(null);
 const fileStatus = ref<UploadStatus>('ready');
 const triggerUpload = () => {
@@ -30,6 +37,14 @@ const triggerUpload = () => {
 const handleFileChange = (e:Event) => {
     const target = e.target as HTMLInputElement;
     const files = target.files;
+
+    if(props.beforeUpload){
+        const res = props.beforeUpload(files[0]);
+        if(!res){
+            return;
+        }
+    }
+
     if(files){
         fileStatus.value = 'loading';
         const uploadedFile = files[0];
@@ -40,11 +55,13 @@ const handleFileChange = (e:Event) => {
                 'Content-Type': 'multipart/form-data'
             }
         }).then(res => {
-            console.log(res);
+            // console.log(res);
             fileStatus.value = 'success';
+            emit('file-upload-success',res.data);
         }).catch(err => {
-            console.log(err);
+            // console.log(err);
             fileStatus.value = 'error';
+            emit('file-upload-fail',err);
         }).finally(() => {
             if(fileInput.value){
                 fileInput.value.value = '';
