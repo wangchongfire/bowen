@@ -14,9 +14,10 @@
         
         <ValidateForm @form-submit="handleFormSubmit">
             <template #title>
-                <div>新建文章</div>
+                <div v-if="!isEditMode">新建文章</div>
+                <div v-else>编辑文章</div>
             </template>
-            
+
             <ValidateInput type="text" :rules="titleRule" tag="input" v-model:modelValue="titleVal"
             placeholder="请输入文章标题"
             >
@@ -60,6 +61,7 @@ const route = useRoute();
 
 const isEditMode = !!route.query.id;
 const curPostImgUrl = ref('');
+let postId = '';
 
 const titleVal = ref('');
 const detailVal = ref('');
@@ -68,10 +70,11 @@ let imageId = '';
 const getPost = async () => {
     if(isEditMode){
         const {data} = await axios.get(`/posts/${route.query.id}`);
-        curPostImgUrl.value = data.data.image.url;
+        curPostImgUrl.value = data.data.image?.url;
         console.log(data.data);
         titleVal.value = data.data.title;
         detailVal.value = data.data.content;
+        postId = data.data._id;
     }
 }
 watchEffect(() => {
@@ -92,7 +95,15 @@ const handleFormSubmit = (result:boolean) => {
             if(imageId){
                 newPost.image = imageId;
             }
-            store.dispatch('createPost',newPost).then(() => {
+            let p:Promise<any>;
+            if(!isEditMode){
+                p = store.dispatch('createPost',newPost);
+            }else{
+                newPost._id = postId;
+                p = store.dispatch('updatePost',{id:postId,newPost:newPost});
+            }
+
+            p.then(() => {
                 createMessage('success','发表成功，2秒后跳转到文章！');
                 setTimeout(() => {
                     router.push({name:'column',params:{id:column}});

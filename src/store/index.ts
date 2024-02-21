@@ -129,6 +129,9 @@ export default createStore<GlobalDataProps>({
     },
     async createPost(context,rawData){
       axios.post('/posts',rawData);
+    },
+    async updatePost(context,{id,newPost}){
+      axios.patch(`/posts/${id}`,newPost);
     }
   },
   modules: {
