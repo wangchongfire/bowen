@@ -17,18 +17,27 @@
                 <div v-if="!isEditMode">新建文章</div>
                 <div v-else>编辑文章</div>
             </template>
-
             <ValidateInput type="text" :rules="titleRule" tag="input" v-model:modelValue="titleVal"
             placeholder="请输入文章标题"
             >
                 <div>文章标题：</div>
             </ValidateInput>
+<!-- {{ detailVal }} -->
+            <div :class="{editor:true,borderWarn:isEmpty}">
+                <MdEditor v-model="detailVal" @blur="checkEditor"/>
+                <div class="div" v-if="editorStatus.isVisible">{{ editorStatus.message }}</div>
+            </div>
+            <!-- <EditorComponent
+            ref="editorRef"
+            v-model:modelValue="detailVal"
+            @blur="checkEditor"
+            ></EditorComponent> -->
 
-            <ValidateInput type="text" :rules="detailRule" tag="textarea" v-model:modelValue="detailVal"
+            <!-- <ValidateInput type="text" :rules="detailRule" tag="textarea" v-model:modelValue="detailVal"
             placeholder="请输入文章详情"
             >
                 <div>文章详情：</div>
-            </ValidateInput>
+            </ValidateInput> -->
 
             <template #submit>
                 <el-button type="primary">发表文章</el-button>
@@ -39,7 +48,7 @@
 <script lang="ts" setup>
 import ValidateInput, { IRuleProp } from '@/components/ValidateInput.vue';
 import ValidateForm from '@/components/ValidateForm.vue';
-import { onMounted, ref, watchEffect } from 'vue';
+import { onMounted, reactive, ref, watchEffect } from 'vue';
 import axios from 'axios';
 import UploaderComponent from '@/components/UploaderComponent.vue';
 import {createMessage} from '../hooks/UseCreateMessage';
@@ -47,6 +56,10 @@ import {ResponseType,ImageProps,PostProps} from '../store/index';
 import {beforeUploadCheck} from '../hooks/helper';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
+import EasyMDE from 'easymde';
+import EditorComponent from '@/components/EditorComponent.vue';
+import { MdEditor } from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 
 const titleRule: IRuleProp[] = [
     { type: 'required', message: '文章标题不能为空' }
@@ -67,6 +80,34 @@ const titleVal = ref('');
 const detailVal = ref('');
 let imageId = '';
 
+let isEmpty = ref(false);
+const editorRef = ref();
+const editorStatus = reactive({
+    isVisible:false,
+    message:'',
+})
+onMounted(() => {
+console.log(editorRef.value);
+
+})
+const checkEditor = () => {
+    if(detailVal.value){
+        editorStatus.isVisible = false;
+        editorStatus.message = '';
+        isEmpty.value = false;
+    }else{
+        editorStatus.isVisible = true;
+        editorStatus.message = '文章内容不能为空！';
+        isEmpty.value = true;
+    }
+}
+// const textarea = ref<null | HTMLTextAreaElement>(null);
+// onMounted(() => {
+//     if(textarea.value){
+//         const easyMDEInstance = new EasyMDE({element:textarea.value});
+//     }
+// })
+
 const getPost = async () => {
     if(isEditMode){
         const {data} = await axios.get(`/posts/${route.query.id}`);
@@ -83,7 +124,8 @@ watchEffect(() => {
 
 // 
 const handleFormSubmit = (result:boolean) => {
-    if(result){
+    checkEditor();
+    if(result && !editorStatus.isVisible){
         const {column,_id} = store.state.user;
         if(column){
             const newPost:PostProps = {
@@ -155,4 +197,14 @@ const onFileUploadFail = (err) => {
 // }
 </script>
 <style lang="scss" scoped>
+.editor{
+    height: 530px;
+    box-sizing: border-box;
+   .div{
+    color:red;
+   }
+}
+.borderWarn{
+    border: 1px solid #f30505;
+}
 </style>
