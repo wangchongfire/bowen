@@ -28,18 +28,26 @@
                     编辑
                 </router-link>
             </el-button>
-            <el-button type="danger">删除</el-button>
+            <el-button type="danger">
+                <ModalComponent @confirm-delete="handleDelete">
+                    删除
+                    <template #message>确认删除文章吗？</template>
+                </ModalComponent>
+            </el-button>
         </div>
     </div>
 </template>
 <script setup lang="ts">
+import ModalComponent from "@/components/ModalComponent.vue";
 import {  computed, reactive, toRefs, watchEffect } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import axios from 'axios';
 import { useStore } from "vuex";
-import { UserProps,PostProps } from "../store/index";
+import { UserProps } from "../store/index";
+import {createMessage} from '../hooks/UseCreateMessage';
 
 const route = useRoute();
+const router = useRouter();
 const store = useStore();
 
 const postObj = reactive({post:{}});
@@ -58,7 +66,20 @@ const isEditorVisible = computed(() => {
         return curAuthor._id === userId;
     }
     return false; 
-})
+});
+
+//
+const handleDelete = () => {
+    // console.log(post.value?.column);//文章所属专栏的id
+    // console.log(post.value?._id);//文章的id
+    axios.delete(`/posts/${post.value?._id}`).then(res => {
+        // console.log(res);
+        createMessage('success',"删除成功，2秒后回到专栏");
+        setTimeout(() => {
+            router.push(`/column/${post.value?.column}`);
+        },2000);
+    })
+}
 </script>
 <style lang="scss" scoped>
 .post-detail{

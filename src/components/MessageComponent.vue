@@ -2,12 +2,11 @@
     <Teleport to="#message">
         <div v-if="isVisible" class="message">
             {{ message }}
-            <el-icon class="icon" @click="hide" color="red"><CircleCloseFilled /></el-icon>
+            <button @click="hide">确定</button>
         </div>
     </Teleport>
 </template>
 <script setup lang="ts">
-import { CircleCloseFilled} from "@element-plus/icons-vue";
 import { ref,defineProps, onUnmounted, PropType } from "vue";
 import {MessageType} from '../hooks/UseCreateMessage';
 
@@ -37,8 +36,6 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .message{
     position:absolute;
-    width: 300px;
-    height: 50px;
     background:pink;
     top: 0;
     margin: 0 auto;
@@ -47,9 +44,9 @@ onUnmounted(() => {
     text-align: center;
     line-height: 50px;
 
-    .el-icon{
-        width: 5px;
-        height: 5px;
+    button{
+        border: none;
+        background: none;
     }
 }
 </style>

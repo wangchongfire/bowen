@@ -71,7 +71,7 @@ const getPost = async () => {
     if(isEditMode){
         const {data} = await axios.get(`/posts/${route.query.id}`);
         curPostImgUrl.value = data.data.image?.url;
-        console.log(data.data);
+        // console.log(data.data);
         titleVal.value = data.data.title;
         detailVal.value = data.data.content;
         postId = data.data._id;
@@ -127,7 +127,7 @@ const beforeUpload = (file:File):boolean => {
 
 const onFileUploadSuccess = (data:ResponseType<ImageProps>):void => {
     imageId = data.data._id;//图片上传成功，将id取出来用于后续提交文章
-    createMessage('success',`上传图片ID为${data.data._id}`);
+    createMessage('success',`上传图片ID为：${data.data._id}`);
 }
 const onFileUploadFail = (err) => {
     createMessage('error',err);
