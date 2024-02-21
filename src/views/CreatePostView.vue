@@ -16,7 +16,7 @@
             <template #title>
                 <div>新建文章</div>
             </template>
-
+            
             <ValidateInput type="text" :rules="titleRule" tag="input" v-model:modelValue="titleVal"
             placeholder="请输入文章标题"
             >
@@ -69,6 +69,9 @@ const getPost = async () => {
     if(isEditMode){
         const {data} = await axios.get(`/posts/${route.query.id}`);
         curPostImgUrl.value = data.data.image.url;
+        console.log(data.data);
+        titleVal.value = data.data.title;
+        detailVal.value = data.data.content;
     }
 }
 watchEffect(() => {

@@ -17,7 +17,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { PropType,defineExpose, reactive,defineOptions,defineEmits,defineProps, onMounted} from 'vue';
+import { PropType,defineExpose, reactive,defineOptions,defineEmits,defineProps, onMounted, watch} from 'vue';
 import {emitter} from '../../src/hooks/UseMitt';
 
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -47,6 +47,10 @@ const inputRef = reactive({
     message:'',//绑定的错误提示信息
     error:false,//输入信息是佛正确
 });
+watch(() => props.modelValue,(newValue) => {
+    inputRef.val = newValue || '';
+})
+
 // 遍历传入的数组，检验输入值是否符合每一个规则
 const validateInput = ():boolean => {
     if(props.rules){
