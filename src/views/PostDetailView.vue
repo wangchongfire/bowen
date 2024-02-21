@@ -37,7 +37,7 @@ import {  computed, reactive, toRefs, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import axios from 'axios';
 import { useStore } from "vuex";
-import { UserProps } from "../store/index";
+import { UserProps,PostProps } from "../store/index";
 
 const route = useRoute();
 const store = useStore();

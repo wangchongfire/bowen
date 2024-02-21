@@ -11,7 +11,7 @@
             <span>正在上传...</span>
         </slot>
         <slot
-        :uplodaedData="uploadData"
+        :uplodaedImgUrl="uplodaedImgUrl"
         v-else-if="fileStatus==='success'" name="succss">
             <span>上传成功</span>
         </slot>
@@ -21,7 +21,7 @@
     </button>
 </template>
 <script lang="ts" setup>
-import { ref, defineProps,defineEmits, PropType } from 'vue'
+import { ref, defineProps,defineEmits, PropType, watch } from 'vue'
 import axios from 'axios';
 
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error';
@@ -34,17 +34,27 @@ const props = defineProps({
     },
     beforeUpload:{
         type:Function as PropType<CheckFile>,
+    },
+    curImgUrl:{
+        type:String,
     }
 });
 const emit = defineEmits(['file-upload-success','file-upload-fail']);
 
-const uploadData = ref();
+const uplodaedImgUrl = ref(props.curImgUrl || '');
 const fileInput = ref<null | HTMLInputElement>(null);
-const fileStatus = ref<UploadStatus>('ready');
+const fileStatus = ref<UploadStatus>(props.curImgUrl ? 'success' : 'ready');
+
+watch(() => props.curImgUrl,(newValue) => {
+    if(newValue){
+        fileStatus.value = 'success';
+        uplodaedImgUrl.value = newValue;
+    }
+})
+
 const triggerUpload = () => {
     fileInput.value.click();
 }
-
 const handleFileChange = (e:Event) => {
     const target = e.target as HTMLInputElement;
     const files = target.files;
@@ -66,9 +76,9 @@ const handleFileChange = (e:Event) => {
                 'Content-Type': 'multipart/form-data'
             }
         }).then(res => {
-            // console.log(res);
+            // console.log('upload view res:',res.data.data.url);
             fileStatus.value = 'success';
-            uploadData.value = res.data;
+            uplodaedImgUrl.value = res.data.data.url;
             emit('file-upload-success',res.data);
         }).catch(err => {
             // console.log(err);

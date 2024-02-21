@@ -1,13 +1,14 @@
 <template>
     <div class="container">
         <!-- <input type="file" name="file" @change.prevent="handleFileChange"/> -->
-        <UploaderView 
+        <UploaderView
+        :curImgUrl="curPostImgUrl" 
         @file-upload-success="onFileUploadSuccess"
         @file-upload-fail="onFileUploadFail"
         action="/upload" 
         :beforeUpload="beforeUpload">
             <template #succss="soltProps"> 
-                <img :src="soltProps.uplodaedData.data.url"/>
+                <img :src="soltProps.uplodaedImgUrl"/>
             </template>
         </UploaderView>
         
@@ -37,14 +38,14 @@
 <script lang="ts" setup>
 import ValidateInput, { IRuleProp } from '@/components/ValidateInput.vue';
 import ValidateForm from '@/components/ValidateForm.vue';
-import { ref } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import axios from 'axios';
 import UploaderView from '@/components/UploaderView.vue';
 import {createMessage} from '../hooks/UseCreateMessage';
 import {ResponseType,ImageProps,PostProps} from '../store/index';
 import {beforeUploadCheck} from '../hooks/helper';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const titleRule: IRuleProp[] = [
     { type: 'required', message: '文章标题不能为空' }
@@ -55,10 +56,25 @@ const detailRule: IRuleProp[] = [
 
 const store = useStore();
 const router = useRouter();
+const route = useRoute();
+
+const isEditMode = !!route.query.id;
+const curPostImgUrl = ref('');
 
 const titleVal = ref('');
 const detailVal = ref('');
 let imageId = '';
+
+const getPost = async () => {
+    if(isEditMode){
+        const {data} = await axios.get(`/posts/${route.query.id}`);
+        curPostImgUrl.value = data.data.image.url;
+    }
+}
+// 
+watchEffect(() => {
+    getPost();
+})
 
 // 
 const handleFormSubmit = (result:boolean) => {
@@ -97,7 +113,7 @@ const beforeUpload = (file:File):boolean => {
 }
 
 const onFileUploadSuccess = (data:ResponseType<ImageProps>):void => {
-    imageId = data.data._id;//图片上传成功，将id取出来用于后序提交文章
+    imageId = data.data._id;//图片上传成功，将id取出来用于后续提交文章
     createMessage('success',`上传图片ID为${data.data._id}`);
 }
 const onFileUploadFail = (err) => {
