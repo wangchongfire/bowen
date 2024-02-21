@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- <input type="file" name="file" @change.prevent="handleFileChange"/> -->
-        <UploaderView
+        <UploaderComponent
         :curImgUrl="curPostImgUrl" 
         @file-upload-success="onFileUploadSuccess"
         @file-upload-fail="onFileUploadFail"
@@ -10,7 +10,7 @@
             <template #succss="soltProps"> 
                 <img :src="soltProps.uplodaedImgUrl"/>
             </template>
-        </UploaderView>
+        </UploaderComponent>
         
         <ValidateForm @form-submit="handleFormSubmit">
             <template #title>
@@ -40,7 +40,7 @@ import ValidateInput, { IRuleProp } from '@/components/ValidateInput.vue';
 import ValidateForm from '@/components/ValidateForm.vue';
 import { onMounted, ref, watchEffect } from 'vue';
 import axios from 'axios';
-import UploaderView from '@/components/UploaderView.vue';
+import UploaderComponent from '@/components/UploaderComponent.vue';
 import {createMessage} from '../hooks/UseCreateMessage';
 import {ResponseType,ImageProps,PostProps} from '../store/index';
 import {beforeUploadCheck} from '../hooks/helper';
@@ -71,7 +71,6 @@ const getPost = async () => {
         curPostImgUrl.value = data.data.image.url;
     }
 }
-// 
 watchEffect(() => {
     getPost();
 })
