@@ -5,26 +5,28 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import router from './router';
-import store from './store';
+import store from './store/index';
 import axios from 'axios';
+import { createPinia } from 'pinia';
+import {useGlobalStore} from './store/global'
 
-// axios.defaults.baseURL = 'http://apis.imooc.com/api';
-// axios.interceptors.request.use(config => {
-//     config.params = {...config.params,icode:'71E023A54874772F'};
 
-//     store.state.loading = true;
-//     return config;
-// });
+const app = createApp(App);
+const pinia = createPinia();
+app.use(pinia);
 
+const globalStore = useGlobalStore();
 // 替换 baseURL
 axios.defaults.baseURL = 'http://apis.imooc.com/api/'
 // 下面的 icode 值是从慕课网获取的 token 值，可以在课程右侧的项目接口校验码找到
 axios.interceptors.request.use(config => {
   //正在请求时，显示Loader组件
-  store.state.loading = true;
+  // store.state.loading = true;
+  globalStore.setLoading(true);
 
   // 刚发起请求时，将全局状态中的error设置为false
-  store.commit('setError',{status:false,message:''});
+  // store.commit('setError',{status:false,message:''});
+  globalStore.setError({status:false,message:''});
 
   // get 请求，添加到 url 中
   config.params = { ...config.params, icode: '71E023A54874772F' }
@@ -40,13 +42,16 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(config => {
-    store.state.loading = false;
+    // store.state.loading = false;
+    globalStore.setLoading(false);
     return config;
 },err => {//响应出现错误时进行拦截，并且更新全局状态中的error
   console.log('拦截器error：',err);
   const error = err.response.data.error;
-  store.commit('setError',{status:true,message:error});
-  store.state.loading = false;
+  // store.commit('setError',{status:true,message:error});
+  // store.state.loading = false;
+  globalStore.setError({status:true,message:error});
+  globalStore.setLoading(false);
   return Promise.reject(error);
 });
 
@@ -55,6 +60,6 @@ axios.interceptors.response.use(config => {
     
 // });
 
-const app = createApp(App)
+
 app.use(ElementPlus).use(store).use(router);
-app.mount('#app')
+app.mount('#app');

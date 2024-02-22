@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-        <!-- <input type="file" name="file" @change.prevent="handleFileChange"/> -->
         <UploaderComponent
         :curImgUrl="curPostImgUrl" 
         @file-upload-success="onFileUploadSuccess"
@@ -22,23 +21,10 @@
             >
                 <div>文章标题：</div>
             </ValidateInput>
-<!-- {{ detailVal }} -->
             <div :class="{editor:true,borderWarn:isEmpty}">
                 <MdEditor v-model="detailVal" @blur="checkEditor"/>
                 <div class="div" v-if="editorStatus.isVisible">{{ editorStatus.message }}</div>
             </div>
-            <!-- <EditorComponent
-            ref="editorRef"
-            v-model:modelValue="detailVal"
-            @blur="checkEditor"
-            ></EditorComponent> -->
-
-            <!-- <ValidateInput type="text" :rules="detailRule" tag="textarea" v-model:modelValue="detailVal"
-            placeholder="请输入文章详情"
-            >
-                <div>文章详情：</div>
-            </ValidateInput> -->
-
             <template #submit>
                 <el-button type="primary">发表文章</el-button>
             </template>
@@ -48,7 +34,7 @@
 <script lang="ts" setup>
 import ValidateInput, { IRuleProp } from '@/components/ValidateInput.vue';
 import ValidateForm from '@/components/ValidateForm.vue';
-import { onMounted, reactive, ref, watchEffect } from 'vue';
+import {  reactive, ref, watchEffect } from 'vue';
 import axios from 'axios';
 import UploaderComponent from '@/components/UploaderComponent.vue';
 import {createMessage} from '../hooks/UseCreateMessage';
@@ -56,16 +42,11 @@ import {ResponseType,ImageProps,PostProps} from '../store/index';
 import {beforeUploadCheck} from '../hooks/helper';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
-import EasyMDE from 'easymde';
-import EditorComponent from '@/components/EditorComponent.vue';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 
 const titleRule: IRuleProp[] = [
     { type: 'required', message: '文章标题不能为空' }
-]
-const detailRule: IRuleProp[] = [
-    { type: 'required', message: '文章详情不能为空' }
 ]
 
 const store = useStore();
@@ -81,15 +62,11 @@ const detailVal = ref('');
 let imageId = '';
 
 let isEmpty = ref(false);
-const editorRef = ref();
 const editorStatus = reactive({
     isVisible:false,
     message:'',
 })
-onMounted(() => {
-console.log(editorRef.value);
 
-})
 const checkEditor = () => {
     if(detailVal.value){
         editorStatus.isVisible = false;
@@ -101,12 +78,6 @@ const checkEditor = () => {
         isEmpty.value = true;
     }
 }
-// const textarea = ref<null | HTMLTextAreaElement>(null);
-// onMounted(() => {
-//     if(textarea.value){
-//         const easyMDEInstance = new EasyMDE({element:textarea.value});
-//     }
-// })
 
 const getPost = async () => {
     if(isEditMode){
@@ -174,27 +145,6 @@ const onFileUploadSuccess = (data:ResponseType<ImageProps>):void => {
 const onFileUploadFail = (err) => {
     createMessage('error',err);
 }
-
-// 测试代码，已经废弃
-// const handleFileChange = (e:Event) => {
-//     const target = e.target as HTMLInputElement;
-//     const files = target.files;
-//     if(files){
-//         const uploadedFile = files[0];
-//         const formData = new FormData();
-//         formData.append(uploadedFile.name,uploadedFile);
-//         axios.post('/upload',formData,{
-//             headers:{
-//                 'Content-Type': 'multipart/form-data'
-//             }
-//         }).then(res => {
-//             console.log(res);
-//         }).catch(err => {
-//             console.log(err);
-            
-//         })
-//     }
-// }
 </script>
 <style lang="scss" scoped>
 .editor{

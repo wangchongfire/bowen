@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <LoaderComponent v-if="store.state.loading"></LoaderComponent>
+    <LoaderComponent v-if="globalStore.loading"></LoaderComponent>
     <GlobalHeader :user="user"/>
     <router-view></router-view>
   </div>
@@ -10,16 +10,17 @@
 import GlobalHeader from './components/GlobalHeader.vue';
 import {useStore} from 'vuex';
 import LoaderComponent from './components/LoaderComponent.vue';
-import { computed, onMounted, watch } from 'vue';
-import {GlobalDataProps} from './store';
-import axios from 'axios';
+import { computed, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, onUnmounted, onUpdated, watch } from 'vue';
+import {GlobalDataProps} from './store/index';
 import {createMessage,MessageType} from './hooks/UseCreateMessage';
 import VNode from './components/VNode';
+import {useGlobalStore} from './store/global'
 
 const store = useStore<GlobalDataProps>();
+const globalStore = useGlobalStore();
 
 const user = computed(() => store.state.user);
-const error = computed(() => store.state.error);
+const error = computed(() => globalStore.error);
 watch(() => error.value.status,() => {
   const {status,message} = error.value;
   if(status && message){
@@ -38,6 +39,25 @@ watch(() => error.value.status,() => {
 //     store.dispatch('fetchCurUser');
 //   }
 // });
+// onBeforeMount(() => {
+//   console.log('App.vue BeforeMount');
+// });
+// onMounted(() => {
+//   console.log('App.vue Mounted');
+// });
+// onBeforeUpdate(() => {
+//   console.log('App.vue onBeforeUpdate');
+// });
+// onUpdated(() => {
+//   console.log('App.vue onUpdated');
+// });
+// onBeforeUnmount(() => {
+//   console.log('App.vue onBeforeUnmount');
+// });
+// onUnmounted(() => {
+//   console.log('App.vue onUnmounted');
+// });
+
 </script>
 
 <style lang="scss" scoped>
