@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import {useStore} from 'vuex';
 import axios from 'axios';
+import {useUserStore} from '../store/user'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -42,24 +43,27 @@ const router = createRouter({
 });
 
 router.beforeEach((to,from,next) => {
-  const store = useStore();
-  const {user,token} = store.state;
+  // const store = useStore();
+  const userStore = useUserStore();
+  // const {user,token} = store.state;
   const {requireLogin,requireNotLogin} = to.meta;
 
-  if(!user.isLogin){
-    if(token){
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-      store.dispatch('fetchCurUser').then(() => {
+  if(!userStore.isLogin){
+    if(userStore.token){
+      axios.defaults.headers.common.Authorization = `Bearer ${userStore.token}`;
+
+      userStore.fetchCurrentUser().then(() => {
         if(requireNotLogin){
           next('/');
         }else{
           next();
         }
       }).catch(err => {
-        console.log(err);
-        localStorage.removeItem('token');
+        console.log('路由守卫错误:',err);
+        userStore.logout();
         next('login');
       })
+
     }else{
       if(requireLogin){
         next('login');

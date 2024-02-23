@@ -1,5 +1,4 @@
 <template>
-  <div>login view</div>
   <div class="login">
     <ValidateForm @form-submit="handleFormSubmit">
       <template #title>
@@ -26,6 +25,7 @@ import ValidateForm from '../components/ValidateForm.vue'
 import ValidateInput, { IRuleProp } from '../components/ValidateInput.vue';
 import { useStore } from 'vuex';
 import {createMessage,MessageType} from '../hooks/UseCreateMessage';
+import {useUserStore} from '../store/user';
 
 // 表单数据之邮箱数据的响应式
 const emailVal = ref('111@test.com');
@@ -48,23 +48,35 @@ const errorMessage = ref('');
 const inputRef = ref<any>();
 const router = useRouter();
 const store = useStore();
+const userStore = useUserStore();
 // 处理表单组件注册的事件
-const handleFormSubmit = (flag: boolean) => {
+const handleFormSubmit = async (flag: boolean) => {
   // console.log('表单提交结果',flag);
   if (flag) {
-    store.dispatch('loginAndFetch', {
-      email: emailVal.value,
-      password: passwordVal.value,
-    }).then(() => {
-      // 使用代码调用组件
-      createMessage('success','登录成功，2秒后跳转！');
-      setTimeout(() => {
-        router.push('/');
-      },2000);
-    }).catch(err => {
-      console.log('login组件error',err);
-      errorMessage.value = err;
-    })
+    // store.dispatch('loginAndFetch', {
+    //   email: emailVal.value,
+    //   password: passwordVal.value,
+    // }).then(() => {
+    //   // 使用代码调用组件
+    //   createMessage('success','登录成功，2秒后跳转！');
+    //   setTimeout(() => {
+    //     router.push('/');
+    //   },2000);
+    // }).catch(err => {
+    //   console.log('login组件error',err);
+    //   errorMessage.value = err;
+    // })
+
+      try {
+        await userStore.login(emailVal.value,passwordVal.value);
+        await userStore.fetchCurrentUser();
+        createMessage('success','登录成功，2秒后跳转首页！');
+        setTimeout(() => {
+          router.push('/');
+        },2000);
+      } catch (error) {
+        console.log(error);
+      }
   }
 }
 </script>

@@ -35,7 +35,7 @@
 </template>
 <script lang="ts" setup>
 import { GlobalDataProps ,PostProps} from "@/store";
-import { computed, onMounted, ref,reactive, onBeforeMount, watchEffect, toRefs, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted } from "vue";
+import { computed, onMounted, ref,reactive, watchEffect} from "vue";
 import { useRoute } from "vue-router";
 import {useStore} from 'vuex';
 import axios from 'axios';
@@ -63,26 +63,6 @@ onMounted(() => {
 const userArticles = computed(() => {
     return store.state.posts;
 });
-// console.log('专栏列表页面');
-// console.log(store.state.posts);
-// onBeforeMount(() => {
-//   console.log('ColumnDetailView.vue BeforeMount');
-// });
-// onMounted(() => {
-//   console.log('ColumnDetailView.vue Mounted');
-// });
-// onBeforeUpdate(() => {
-//   console.log('ColumnDetailView.vue onBeforeUpdate');
-// });
-// onUpdated(() => {
-//   console.log('ColumnDetailView.vue onUpdated');
-// });
-// onBeforeUnmount(() => {
-//   console.log('ColumnDetailView.vue onBeforeUnmount');
-// });
-// onUnmounted(() => {
-//   console.log('ColumnDetailView.vue onUnmounted');
-// });
 </script>
 <style lang="scss">
 .container {

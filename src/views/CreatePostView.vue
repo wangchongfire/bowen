@@ -44,6 +44,7 @@ import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
+import {useUserStore} from '../store/user'
 
 const titleRule: IRuleProp[] = [
     { type: 'required', message: '文章标题不能为空' }
@@ -52,6 +53,7 @@ const titleRule: IRuleProp[] = [
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+const userStore = useUserStore();
 
 const isEditMode = !!route.query.id;
 const curPostImgUrl = ref('');
@@ -95,9 +97,10 @@ watchEffect(() => {
 
 // 
 const handleFormSubmit = (result:boolean) => {
+    
     checkEditor();
-    if(result && !editorStatus.isVisible){
-        const {column,_id} = store.state.user;
+    if(result){
+        const {column,_id} = userStore.data;
         if(column){
             const newPost:PostProps = {
                 title:titleVal.value,

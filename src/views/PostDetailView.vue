@@ -45,10 +45,12 @@ import axios from 'axios';
 import { useStore } from "vuex";
 import { UserProps } from "../store/index";
 import {createMessage} from '../hooks/UseCreateMessage';
+import {useUserStore} from '../store/user';
 
 const route = useRoute();
 const router = useRouter();
-const store = useStore();
+// const store = useStore();
+const userStore = useUserStore();
 
 const postObj = reactive({post:{}});
 const {post} = toRefs(postObj);
@@ -60,7 +62,7 @@ watchEffect(() => {
     getCurPost();
 });
 const isEditorVisible = computed(() => {
-    const userId = store.state.user._id;
+    const userId = userStore.data._id;
     if(post.value && post.value.author){
         const curAuthor = postObj.post.author as UserProps;
         return curAuthor._id === userId;
